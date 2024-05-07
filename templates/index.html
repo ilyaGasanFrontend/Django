@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet"
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-
+J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+crossorigin="anonymous"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Домашняя страница</title>
+    <script>
+        function validateForm() {
+            var userName = document.getElementById("userName").value;
+            var email = document.getElementById("InputEmail").value;
+            var phoneNumber = document.getElementById("phonenumber").value;
+            var university = document.getElementById("university").value;
+            var sciAdviser = document.getElementById("sciAdviser").value;
+            var article = document.getElementById("article").value;
+            var aboutArticle = document.getElementById("FormControlTextarea1").value;
+
+            if (userName == "" || email == "" || phoneNumber == "" || university == "" || sciAdviser == "" || article == "" || aboutArticle == "") {
+                alert("Пожалуйста, заполните все поля.");
+                return false;
+            }
+
+            if (userName.length > 50 || email.length > 50 || phoneNumber.length > 12 || university.length > 100 || sciAdviser.length > 50 || article.length > 50 || aboutArticle.length > 500) {
+                alert("Достигнуто ограничение максимальной длины!");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<style>
+    body{
+        background: url("https://storge.pic2.me/c/1360x800/889/55532b845c7b6.jpg");
+        background-size: cover;
+    }
+    .card1{
+        width:60%;
+        height: 60%; /* если высота не будет задана явна, она будет равна 100% */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        border-radius: 20px;
+        box-shadow: 0 50px 50px rgba(0,0,0,0.7); /* Параметры тени */
+    }
+    .card2{
+        border-radius: 20px;
+        background: url("https://w-dog.ru/wallpapers/15/15/330935819042751/razmytie-fonrozovyj-oranzhevyj-svet.jpg");
+        color: #FFF;
+        width:100%;
+        height:100%;
+    }
+</style>
+<body>
+    <div id="carouselExampleControls" class="carousel slide card1" data-ride="carousel">
+        <div class="carousel-inner">
+            {% if not articles %}
+            <div class="carousel-item active">
+                <div class="jumbotron card2">
+                    <h1 class="display-4">Подайте заявку сейчас!</h1>
+                    <p class="lead">Традиционная научная конференция Петрозаводского
+                        государственного университета проводится в вузе с 1948 года.
+                        В конференции принимают участие обучающиеся
+                        Петрозаводского государственного университета, других вузов Карелии и
+                    России, а также зарубежных вузов – партнеров ПетрГУ..</p>
+                    <hr class="my-4">
+                    <p>Авторы</p>
+                    <a class="btn btn-primary btn-lg" href="#" role="button"
+                    onclick="$('#myModalBox').modal('show');">Подать заявку</a>
+                </div>
+            </div>
+            {% else %}
+            {% for article in articles %}
+            <div class="carousel-item {% if article == active_article %} active {% endif %}">
+            <div class="jumbotron card2">
+                <h1 class="display-4">{{article.article}}</h1>
+                <h5>{{article.university}}</h5>
+                <p class="lead" style="font-size:1em;">{{article.about}}</p>
+                <p>Автор: {{article.username}}, Научный руководитель:
+                {{article.adviser}}</p>
+                <a class="btn btn-primary btn-lg" href="#" role="button"
+                onclick="$('#myModalBox').modal('show');">Подать заявку</a>
+                <a class="btn btn-primary btn-lg" href="/show_articles">Просмотреть заявки</a>
+            </div> 
+        </div>
+            {% endfor %}
+            {% endif %}
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" dataslide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleControls" role="button" dataslide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+<!-- HTML-код модального окна -->
+<div id="myModalBox" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Заголовок модального окна -->
+            <div class="modal-header">
+                <h4 class="modal-title">Подать заявку на конференцию</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                style="left:10px;">×</button>
+            </div>
+            <!-- Основное содержимое модального окна -->
+            <div class="modal-body">
+                <form method="POST" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="userName">ФИО участника</label>
+                        <input type="text" class="form-control" id="userName" name="userName">
+                    </div>
+                    <div class="form-group">
+                        <label for="InputEmail">Email адрес</label>
+                        <input type="email" class="form-control" id="InputEmail"
+                        name="InputEmail" aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="phonenumber">Телефон</label>
+                        <input type="text" class="form-control" id="phonenumber"
+                        name="phonenumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="university">Полное наименование ВУЗа</label>
+                        <input type="text" class="form-control" id="university"
+                        name="university">
+                    </div>
+                    <div class="form-group">
+                        <label for="sciAdviser">ФИО научного руководителя</label>
+                        <input type="text" class="form-control" id="sciAdviser"
+                        name="sciAdviser">
+                    </div>
+                    <div class="form-group">
+                        <label for="article">Название статьи</label>
+                        <input type="text" class="form-control" id="article" name="article">
+                    </div>
+                    <div class="form-group">
+                        <label for="FormControlTextarea1">Описание статьи</label>
+                        <textarea class="form-control" id="FormControlTextarea1"
+                        name="FormControlTextarea1" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
